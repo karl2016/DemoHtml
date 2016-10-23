@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fm_gray">#ff8C8576</color>
+    <color name="fm_black">#ff434343</color>
+    <color name="fm_transparent">#00ffffff</color>
+</resources>
