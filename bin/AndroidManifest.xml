@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.activity.MainActivity"
+            android:name="com.ui.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.activity.VideoPlayerActivity"
+            android:name="com.ui.VideoPlayerActivity"
             android:label="@string/app_name" >
             <intent-filter>
             </intent-filter>

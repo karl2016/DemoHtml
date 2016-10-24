@@ -16,8 +16,8 @@ import org.w3c.dom.NodeList;
 import android.util.Log;
 
 
-public class XmlParser {
-	static final String TAG = "XmlParser";
+public class XmlTool {
+	static final String TAG = "XmlTool";
 	
 	/*
 	 * example xml text

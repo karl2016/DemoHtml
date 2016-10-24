@@ -1,4 +1,4 @@
-package com.activity;
+package com.ui;
 
 import java.io.File;
 import java.util.Vector;
