@@ -1,14 +1,11 @@
 package com.ui;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
@@ -30,12 +27,12 @@ public class MainActivity extends Activity {
 	public UpdateInfo mUpdateInfo;
 	public UpdateDialog mConnectingDialog;
 	public UpdateDialog mDownloadingDialog;
+	public UpdateDialog mUnzipDialog;
 	public String mExceptionString;
 
-	private MainHandler mHandler;
+	public MainHandler mHandler;
 	private WebView mWebView;
 	private MainActivity mMainActivity;
-	private DownloadCompleteReceiver mReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		mMainActivity = this;
 		mHandler = new MainHandler(mMainActivity);
-		mReceiver = new DownloadCompleteReceiver();
 		mWebView = (WebView) findViewById(R.id.webView1);
 
 		mWebView.setWebViewClient(new MainWebViewClient(mMainActivity));
@@ -81,69 +77,15 @@ public class MainActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	class DownloadCompleteReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(
-					DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
 
-				long id = intent.getLongExtra(
-						DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-				if (isDownloadSuccess(id)) {
-					mMainActivity
-							.sendMessage(MainHandler.HANDLER_MSG_DOWNLOAD_FINISH);
-				} else {
-
-					mMainActivity
-							.sendMessage(MainHandler.HANDLER_MSG_EXCEPTION);
-				}
-			}
-		}
-
-		public boolean isDownloadSuccess(long id) {
-			boolean ret = false;
-			String serviceString = Context.DOWNLOAD_SERVICE;
-			DownloadManager downloadManager;
-			downloadManager = (DownloadManager) getSystemService(serviceString);
-			Query statusQuery = new Query();
-			statusQuery.setFilterById(id);
-
-			Cursor cursor = downloadManager.query(statusQuery);
-			if (cursor.moveToFirst()) {
-
-				int status = cursor.getInt(cursor
-						.getColumnIndex(DownloadManager.COLUMN_STATUS));
-				switch (status) {
-				case DownloadManager.STATUS_SUCCESSFUL:
-					ret = true;
-					break;
-				case DownloadManager.STATUS_FAILED:
-					ret = false;
-					break;
-				}
-				String uri = cursor.getString(cursor
-						.getColumnIndex(DownloadManager.COLUMN_URI));
-				String errorStatus = cursor.getString(cursor
-						.getColumnIndex(DownloadManager.COLUMN_STATUS));
-				String exception = "œ¬‘ÿ" + uri + " ß∞‹\n" + "¥ÌŒÛ¬Î:" + errorStatus;
-				mMainActivity.mExceptionString = exception;
-			}
-			cursor.close();
-			return ret;
-		}
-	}
 
 	@Override
 	protected void onResume() {
-		registerReceiver(mReceiver, new IntentFilter(
-				DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 		super.onResume();
 	}
 
 	@Override
 	protected void onDestroy() {
-		if (mReceiver != null)
-			unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
 

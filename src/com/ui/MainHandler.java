@@ -1,10 +1,8 @@
 package com.ui;
 
-import android.app.DownloadManager;
-import android.app.DownloadManager.Query;
-import android.content.Context;
+import java.io.File;
+
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,13 +15,14 @@ import com.tool.AppState;
 class MainHandler extends Handler {
 	public static final String TAG = "MainHandler";
 	public static final String HANDLER_KEY_TYPE = "handler_key_type";
-
 	public static final int HANDLER_MSG_EXCEPTION = 0;
 	public static final int HANDLER_MSG_UPDATEINFO = 1;
 	public static final int HANDLER_MSG_START_DOWNLOAD = 2;
 	public static final int HANDLER_MSG_START_DOWNLOAD_HTML = 3;
 	public static final int HANDLER_MSG_START_DOWNLOAD_APP = 4;
-	public static final int HANDLER_MSG_DOWNLOAD_FINISH = 5;
+	public static final int HANDLER_MSG_DOWNLOAD_HTML_FINISH = 5;
+	public static final int HANDLER_MSG_DOWNLOAD_APP_FINISH = 6;
+	public static final int HANDLER_MSG_UNZIP_FINISH = 7;
 
 	MainActivity mActivity;
 
@@ -46,11 +45,13 @@ class MainHandler extends Handler {
 				mActivity.mDownloadingDialog.dismiss();
 				mActivity.mDownloadingDialog = null;
 			}
-//			Toast.makeText(mActivity, mActivity.mExceptionString,
-//					Toast.LENGTH_SHORT).show();
+			if (mActivity.mUnzipDialog != null) {
+				mActivity.mUnzipDialog.dismiss();
+				mActivity.mUnzipDialog = null;
+			}
 			new UpdateDialog(mActivity,
-					UpdateDialog.DIALOG_TYPE_INFO_EXCEPTION, mActivity,
-					null).show();
+					UpdateDialog.DIALOG_TYPE_INFO_EXCEPTION, mActivity, null)
+					.show();
 			break;
 		}
 		case HANDLER_MSG_UPDATEINFO: {
@@ -118,28 +119,45 @@ class MainHandler extends Handler {
 			}
 			break;
 		}
-		case HANDLER_MSG_DOWNLOAD_FINISH: {
+		case HANDLER_MSG_DOWNLOAD_HTML_FINISH: {
 			String file = mActivity.mDownloadingDialog.getDownloadFilePath();
 			Log.v(TAG, " download " + file + " complete");
 
 			Toast.makeText(mActivity, file + " 下载完成", Toast.LENGTH_SHORT)
 					.show();
 
-			boolean isDownloadHtml = false;
-			if (mActivity.mDownloadingDialog.getDownloadType() == UpdateDialog.DIALOG_TYPE_DOWNLOADING_HTML) {
-				isDownloadHtml = true;
-			} else if (mActivity.mDownloadingDialog.getDownloadType() == UpdateDialog.DIALOG_TYPE_DOWNLOADING_APP) {
-				// installAPK(mActivity.mDownloadingDialog.getDownloadFilePath());
-			}
+			mActivity.mUnzipDialog = new UpdateDialog(mActivity,
+					UpdateDialog.DIALOG_TYPE_UNZIP_HTML, mActivity,
+					mActivity.mDownloadingDialog.getDownloadFilePath());
+			mActivity.mUnzipDialog.show();
+
 			mActivity.mDownloadingDialog.dismiss();
-			mActivity.mDownloadingDialog = null;
-			// start download apk after download html finish
-			if (isDownloadHtml
-					&& mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
-							AppState.getLocalApkVersion(mActivity)) > 0) {
+			break;
+		}
+		case HANDLER_MSG_DOWNLOAD_APP_FINISH: {
+			String file = mActivity.mDownloadingDialog.getDownloadFilePath();
+			Log.v(TAG, " download " + file + " complete");
+
+			Toast.makeText(mActivity, file + " 下载完成", Toast.LENGTH_SHORT)
+					.show();
+			mActivity.mDownloadingDialog.dismiss();
+
+			String fileName = file;
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.fromFile(new File(fileName)),
+					"application/vnd.android.package-archive");
+			mActivity.startActivity(intent);
+			break;
+		}
+		case HANDLER_MSG_UNZIP_FINISH: {
+			mActivity.mUnzipDialog.dismiss();
+			// start download apk after unzip html finish
+			if (mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
+					AppState.getLocalApkVersion(mActivity)) > 0) {
 				mActivity
 						.sendMessage(MainHandler.HANDLER_MSG_START_DOWNLOAD_APP);
 			}
+			break;
 		}
 		}
 	}
