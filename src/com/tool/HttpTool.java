@@ -5,11 +5,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
-
-import com.ui.MainActivity;
 
 public abstract class HttpTool {
 	public final String TAG = "HttpTool";

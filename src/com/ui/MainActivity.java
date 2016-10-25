@@ -1,12 +1,6 @@
 package com.ui;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.app.DownloadManager.Query;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
