@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
-import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -30,7 +30,7 @@ public class VideoPlayerActivity extends Activity {
 	Vector<String> mVideoFilesVector;
 	int mAdIndex;
 	int mVideoType;
-	MediaController mMediaController;
+	MyMediaController mMediaController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +52,23 @@ public class VideoPlayerActivity extends Activity {
 
 		if (mVideoType == TYPE_VIDEO_ADVERTISEMENT) {
 			mVideoFilesVector = GetVideoFileNameByDir(mPath);
-			mMediaController = new MediaController(this);
+			mMediaController = new MyMediaController(this);
+			mMediaController.setLongClickable(true);
+
+			mVideoView.setOnLongClickListener(new OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View arg0) {
+					// TODO Auto-generated method stub
+					mActivity.finish();
+					return false;
+				}
+			});
 			mMediaController.setPrevNextListeners(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
 					{
-						mAdIndex = (mAdIndex + mVideoFilesVector.size() - 1)
-								% (mVideoFilesVector.size());
+						mAdIndex = (mAdIndex + 1) % (mVideoFilesVector.size());
 						String filePath = (String) mVideoFilesVector
 								.get(mAdIndex);
 						mVideoView.setVideoURI(Uri.parse(filePath));
@@ -69,25 +79,25 @@ public class VideoPlayerActivity extends Activity {
 				@Override
 				public void onClick(View arg0) {
 					if (mVideoFilesVector.size() > 0) {
-						mAdIndex = (mAdIndex + 1) % (mVideoFilesVector.size());
+						mAdIndex = (mAdIndex + mVideoFilesVector.size() - 1)
+								% (mVideoFilesVector.size());
 						String filePath = (String) mVideoFilesVector
 								.get(mAdIndex);
 						mVideoView.setVideoURI(Uri.parse(filePath));
 						mVideoView.start();
 					}
-
 				}
 			});
 		} else if (mVideoType == TYPE_VIDEO_FILE) {
 			mVideoFilesVector = GetVideoFileNameByPath(mPath);
-			mMediaController = new MediaController(this);
+			mMediaController = new MyMediaController(this);
 		}
 
 		mMediaController.setMediaPlayer(mVideoView);
 		mVideoView.setMediaController(mMediaController);
 		mVideoView.requestFocus();
 		mMediaController.setAnchorView(mVideoView);
-
+		
 		mVideoView
 				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					@Override
