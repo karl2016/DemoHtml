@@ -1,5 +1,8 @@
 package com.tool;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,7 +11,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class AppState {
-	static String mLocalHtmlVersion = "0.0.0";
 
 	static public boolean isNetworkConnected(Context context) {
 		if (context != null) {
@@ -39,10 +41,21 @@ public class AppState {
 	}
 
 	static public String getLocalHtmlVersion(Context context) {
-		return mLocalHtmlVersion;
+		return readHtmlVersionFile(Const.getHtmlVersionFilePath());
 	}
 
-	static public void setLocalHtmlVersion(String version) {
-		mLocalHtmlVersion = version;
+	static private String readHtmlVersionFile(String filePath) {
+		BufferedReader br;
+
+		String line = "0.0.0";
+		try {
+			br = new BufferedReader(new FileReader(filePath));
+			line = br.readLine();
+			br.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return line;
 	}
 }

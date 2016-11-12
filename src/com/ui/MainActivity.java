@@ -11,6 +11,7 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 
 import com.karl.demohtml.R;
+import com.tool.AppState;
 import com.tool.Const;
 import com.tool.UpdateInfo;
 
@@ -60,6 +61,12 @@ public class MainActivity extends Activity {
 		// mWebView.loadUrl("file:///storage/sdcard0/demohtml/index.html");
 		mWebView.loadUrl(filePath);
 		Log.v(TAG, filePath);
+		
+		
+		if (AppState.isNetworkConnected(mMainActivity) == true) {
+			mMainActivity.mConnectingDialog = new UpdateDialog(mMainActivity,
+					UpdateDialog.DIALOG_TYPE_CONNECTING_NET, mMainActivity, null);
+		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

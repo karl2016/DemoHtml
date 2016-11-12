@@ -102,9 +102,6 @@ class MainWebViewClient extends WebViewClient {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String localVersion = url.substring(url.indexOf("(") + 1,
-				url.lastIndexOf(")"));
-		AppState.setLocalHtmlVersion(localVersion);
 
 		mActivity.mConnectingDialog = new UpdateDialog(view.getContext(),
 				UpdateDialog.DIALOG_TYPE_CONNECTING_NET, mActivity, null);

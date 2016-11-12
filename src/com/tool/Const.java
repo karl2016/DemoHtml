@@ -17,6 +17,11 @@ public class Const {
 		return "file://" + Environment.getExternalStorageDirectory().toString()
 				+ "/demo/index.html";
 	}
+	public static String getHtmlVersionFilePath() {
+		return  Environment.getExternalStorageDirectory().toString()
+				+ "/demo/version.txt";
+	}
+	
 	public static String getHtmlDirPath() {
 		return  Environment.getExternalStorageDirectory().toString()
 				+ "/demo/";
