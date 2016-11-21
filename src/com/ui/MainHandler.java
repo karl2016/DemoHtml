@@ -58,17 +58,17 @@ class MainHandler extends Handler {
 			String info = "";
 			boolean apkHaveUpdate = false;
 			boolean htmlHaveUpdate = false;
-			if (mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
-					AppState.getLocalApkVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canApkUpdate(
+					AppState.getLocalApkVersion(mActivity))) {
 				apkHaveUpdate = true;
 				info += "当前app版本：" + AppState.getLocalApkVersion(mActivity)
 						+ ",可更新版本："
 						+ mActivity.mUpdateInfo.getApkUpdateVersion();
 			}
-			if (mActivity.mUpdateInfo.getHtmlUpdateVersion().compareTo(
-					AppState.getLocalHtmlVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canHtmlUpdate(
+					AppState.getLocalHtmlVersion(mActivity))) {
 				htmlHaveUpdate = true;
-				info += "当前html版本：" + AppState.getLocalHtmlVersion(mActivity)
+				info += "当前数据版本：" + AppState.getLocalHtmlVersion(mActivity)
 						+ ",可更新版本："
 						+ mActivity.mUpdateInfo.getHtmlUpdateVersion();
 			}
@@ -82,7 +82,7 @@ class MainHandler extends Handler {
 						info).show();
 			} else {
 				info += "已经是最新版本。app版本："
-						+ AppState.getLocalApkVersion(mActivity) + " html版本："
+						+ AppState.getLocalApkVersion(mActivity) + " 数据版本："
 						+ AppState.getLocalHtmlVersion(mActivity);
 				Toast.makeText(mActivity, info, Toast.LENGTH_SHORT).show();
 			}
@@ -90,18 +90,18 @@ class MainHandler extends Handler {
 		}
 		case HANDLER_MSG_START_DOWNLOAD: {
 			// start download html or apk, html priority
-			if (mActivity.mUpdateInfo.getHtmlUpdateVersion().compareTo(
-					AppState.getLocalHtmlVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canHtmlUpdate(
+					AppState.getLocalHtmlVersion(mActivity))) {
 				mActivity.sendMessage(HANDLER_MSG_START_DOWNLOAD_HTML);
-			} else if (mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
-					AppState.getLocalApkVersion(mActivity)) > 0) {
+			} else if (mActivity.mUpdateInfo.canApkUpdate(
+					AppState.getLocalApkVersion(mActivity))) {
 				mActivity.sendMessage(HANDLER_MSG_START_DOWNLOAD_APP);
 			}
 			break;
 		}
 		case HANDLER_MSG_START_DOWNLOAD_APP: {
-			if (mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
-					AppState.getLocalApkVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canApkUpdate(
+					AppState.getLocalApkVersion(mActivity))) {
 				mActivity.mDownloadingDialog = new UpdateDialog(mActivity,
 						UpdateDialog.DIALOG_TYPE_DOWNLOADING_APP, mActivity,
 						null);
@@ -110,8 +110,8 @@ class MainHandler extends Handler {
 			break;
 		}
 		case HANDLER_MSG_START_DOWNLOAD_HTML: {
-			if (mActivity.mUpdateInfo.getHtmlUpdateVersion().compareTo(
-					AppState.getLocalHtmlVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canHtmlUpdate(
+					AppState.getLocalHtmlVersion(mActivity))) {
 				mActivity.mDownloadingDialog = new UpdateDialog(mActivity,
 						UpdateDialog.DIALOG_TYPE_DOWNLOADING_HTML, mActivity,
 						null);
@@ -152,8 +152,8 @@ class MainHandler extends Handler {
 		case HANDLER_MSG_UNZIP_FINISH: {
 			mActivity.mUnzipDialog.dismiss();
 			// start download apk after unzip html finish
-			if (mActivity.mUpdateInfo.getApkUpdateVersion().compareTo(
-					AppState.getLocalApkVersion(mActivity)) > 0) {
+			if (mActivity.mUpdateInfo.canApkUpdate(
+					AppState.getLocalApkVersion(mActivity))) {
 				mActivity
 						.sendMessage(MainHandler.HANDLER_MSG_START_DOWNLOAD_APP);
 			}

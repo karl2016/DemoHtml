@@ -53,7 +53,6 @@ public class AppState {
 			line = br.readLine();
 			br.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return line;

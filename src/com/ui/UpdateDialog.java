@@ -69,7 +69,7 @@ public class UpdateDialog {
 					R.string.downloading));
 			((ProgressDialog) mDialog).setMax(100);
 			((ProgressDialog) mDialog).setProgress(0);
-			((ProgressDialog) mDialog).setMessage("下载html: 版本"
+			((ProgressDialog) mDialog).setMessage("下载数据: 版本"
 					+ mActivity.mUpdateInfo.getHtmlUpdateVersion());
 			mDialog.setCanceledOnTouchOutside(false);
 			mDialog.setCancelable(false);
@@ -143,8 +143,8 @@ public class UpdateDialog {
 			mDialog = new ProgressDialog(context);
 			((ProgressDialog) mDialog)
 					.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			mDialog.setTitle("安装Html文件");
-			((ProgressDialog) mDialog).setMessage("清空html文件夹");
+			mDialog.setTitle("安装数据文件");
+			((ProgressDialog) mDialog).setMessage("清空数据文件夹");
 			mDialog.setCanceledOnTouchOutside(false);
 			mDialog.setCancelable(false);
 			String filePath = msg;
