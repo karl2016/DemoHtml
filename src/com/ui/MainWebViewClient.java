@@ -103,8 +103,8 @@ class MainWebViewClient extends WebViewClient {
 			return;
 		}
 
-		mActivity.mConnectingDialog = new UpdateDialog(view.getContext(),
-				UpdateDialog.DIALOG_TYPE_CONNECTING_NET, mActivity, null);
+		mActivity.mConnectingDialog = new ConnectingNetDialog(mActivity);
+		mActivity.mConnectingDialog.getUpdateInfo();
 		mActivity.mConnectingDialog.show();
 
 	}

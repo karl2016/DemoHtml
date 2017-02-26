@@ -15,6 +15,7 @@ public abstract class ZipTool {
 	String mUnzippingFileName = "";
 	String mException = "";
 	boolean mbClearOutputDir = false;
+
 	abstract public void onUnzipingFile(String filename);
 
 	abstract public void onUnzipException(String exception);
@@ -34,24 +35,24 @@ public abstract class ZipTool {
 	}
 
 	public void unzip(String zipFileName, String outputDirectory) {
+
 		mZipFileName = zipFileName;
 		mOutputDirectory = outputDirectory;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (mbClearOutputDir == true){
+				if (mbClearOutputDir == true) {
 					File file = new File(mOutputDirectory);
-					DeleteFile(file);	
+					File backupFile = new File(mOutputDirectory + "_backup");
+					MoveFile(file, backupFile);
 				}
-				
-				
+
 				ZipInputStream in = null;
 				try {
 					in = new ZipInputStream(new FileInputStream(mZipFileName));
 
 					ZipEntry z;
 					String name = "";
-					String extractedFile = "";
 					int counter = 0;
 
 					while ((z = in.getNextEntry()) != null) {
@@ -67,7 +68,7 @@ public abstract class ZipTool {
 									+ File.separator + name);
 							folder.mkdirs();
 							if (counter == 0) {
-								extractedFile = folder.toString();
+//								extractedFile = folder.toString();
 							}
 							counter++;
 							Log.d(TAG, "mkdir " + mOutputDirectory
@@ -92,10 +93,20 @@ public abstract class ZipTool {
 					}
 
 					in.close();
+					if (mbClearOutputDir == true) {
+						File backupFile = new File(mOutputDirectory + "_backup");
+						DeleteFile(backupFile);
+					}
 					onUnzipFinish(mZipFileName);
 				} catch (Exception e) {
 					e.printStackTrace();
 					mException = e.getMessage();
+					// »¹Ô­
+					if (mbClearOutputDir == true) {
+						File file = new File(mOutputDirectory);
+						File backupFile = new File(mOutputDirectory + "_backup");
+						MoveFile(backupFile, file);
+					}
 					onUnzipException(e.getMessage());
 				}
 			}
@@ -127,6 +138,15 @@ public abstract class ZipTool {
 				}
 				file.delete();
 			}
+		}
+	}
+
+	private void MoveFile(File file, File newFile) {
+		if (file.exists() == false) {
+			return;
+		} else {
+			file.renameTo(newFile);
+
 		}
 	}
 }

@@ -18,11 +18,10 @@ import com.tool.UpdateInfo;
 public class MainActivity extends Activity {
 	public final String TAG = "MainActivity";
 
-
 	public UpdateInfo mUpdateInfo;
-	public UpdateDialog mConnectingDialog;
-	public UpdateDialog mDownloadingDialog;
-	public UpdateDialog mUnzipDialog;
+	public ConnectingNetDialog mConnectingDialog;
+	public DownloadingDialog mDownloadingDialog;
+	public UnzipDialog mUnzipDialog;
 	public String mExceptionString;
 
 	public MainHandler mHandler;
@@ -61,11 +60,11 @@ public class MainActivity extends Activity {
 		// mWebView.loadUrl("file:///storage/sdcard0/demohtml/index.html");
 		mWebView.loadUrl(filePath);
 		Log.v(TAG, filePath);
-		
-		
+
 		if (AppState.isNetworkConnected(mMainActivity) == true) {
-			mMainActivity.mConnectingDialog = new UpdateDialog(mMainActivity,
-					UpdateDialog.DIALOG_TYPE_CONNECTING_NET, mMainActivity, null);
+			mMainActivity.mConnectingDialog = new ConnectingNetDialog(
+					mMainActivity);
+			mMainActivity.mConnectingDialog.getUpdateInfo();
 		}
 	}
 
@@ -77,8 +76,6 @@ public class MainActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
-
 
 	@Override
 	protected void onResume() {

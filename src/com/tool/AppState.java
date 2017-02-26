@@ -56,5 +56,6 @@ public class AppState {
 			e.printStackTrace();
 		}
 		return line;
+//		return "0.0.0";
 	}
 }

@@ -6,7 +6,8 @@ public class Const {
  
 	
 	public static String getNetUri() {
-		return "http://www.langjingyuan.com/padweb/geturl.php";
+		// return "http://www.langjingyuan.com/padweb/geturl.php";
+		return "http://120.77.156.180/padweb_demo/geturl.php";
 	} 
 
 	public static String getHtmlDirUri() {
