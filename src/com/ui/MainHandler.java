@@ -56,13 +56,13 @@ class MainHandler extends Handler {
 			String info = "";
 			boolean apkHaveUpdate = false;
 			boolean htmlHaveUpdate = false;
-			// if (mActivity.mUpdateInfo.canApkUpdate(
-			// AppState.getLocalApkVersion(mActivity))) {
-			// apkHaveUpdate = true;
-			// info += "当前app版本：" + AppState.getLocalApkVersion(mActivity)
-			// + ",可更新版本："
-			// + mActivity.mUpdateInfo.getApkUpdateVersion();
-			// }
+			if (mActivity.mUpdateInfo.canApkUpdate(AppState
+					.getLocalApkVersion(mActivity))) {
+				apkHaveUpdate = true;
+				info += "当前app版本：" + AppState.getLocalApkVersion(mActivity)
+						+ ",可更新版本："
+						+ mActivity.mUpdateInfo.getApkUpdateVersion();
+			}
 			if (mActivity.mUpdateInfo.canHtmlUpdate(AppState
 					.getLocalHtmlVersion(mActivity))) {
 				htmlHaveUpdate = true;
@@ -116,18 +116,11 @@ class MainHandler extends Handler {
 			break;
 		}
 		case HANDLER_MSG_DOWNLOAD_HTML_FINISH: {
-			if (mActivity.mUnzipDialog != null)
-			{
-				break ;
-			}
-			
 			String file = mActivity.mDownloadingDialog.getDownloadFilePath();
 			Log.v(TAG, " download " + file + " complete");
 
 			Toast.makeText(mActivity, file + " 下载完成", Toast.LENGTH_SHORT)
 					.show();
-
-			
 
 			mActivity.mUnzipDialog = new UnzipDialog(mActivity,
 					mActivity.mDownloadingDialog.getDownloadFilePath());
