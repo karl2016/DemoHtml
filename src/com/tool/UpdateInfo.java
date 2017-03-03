@@ -3,6 +3,8 @@ package com.tool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UpdateInfo {
 	List<ApkUpdateInfo> apkInfoList;
@@ -114,37 +116,20 @@ public class UpdateInfo {
 		if (version1.equals(version2)) {
 			return 0;
 		}
-		String[] version1Array = version1.split("\\.");
-		String[] version2Array = version2.split("\\.");
-		int index = 0;
-		int minLen = Math.min(version1Array.length, version2Array.length);
+		String pattern = "(\\d)";
+
+		Pattern r = Pattern.compile(pattern);
+		Matcher m1 = r.matcher(version1);
+		Matcher m2 = r.matcher(version2);
 		int diff = 0;
-		while (index < minLen && diff == 0) {
-			String v1 = version1Array[index];
-			if (v1.indexOf("(") > 0)
-				v1 = v1.substring(0, v1.indexOf("("));
-
-			String v2 = version2Array[index];
-			if (v2.indexOf("(") > 0)
-				v2 = v2.substring(0, v2.indexOf("("));
-
-			diff = Integer.parseInt(v1) - Integer.parseInt(v2);
-			index++;
+		while (m1.find() && m2.find() && diff == 0) {
+			diff = Integer.parseInt(m1.group()) - Integer.parseInt(m2.group());
+			System.out
+					.println("Found value: " + m1.group() + "  " + m2.group());
 		}
-		if (diff == 0) {
-			for (int i = index; i < version1Array.length; i++) {
-				if (Integer.parseInt(version1Array[i]) > 0) {
-					return 1;
-				}
-			}
-			for (int i = index; i < version2Array.length; i++) {
-				if (Integer.parseInt(version2Array[i]) > 0) {
-					return -1;
-				}
-			}
+		if (diff == 0)
 			return 0;
-		} else {
+		else
 			return diff > 0 ? 1 : -1;
-		}
 	}
 }
